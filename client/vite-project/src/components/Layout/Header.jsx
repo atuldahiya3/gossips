@@ -6,7 +6,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React from "react";
+import React, { Suspense, lazy, useState } from "react";
 import { orange } from "../../constants/colour";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IoMenu } from "react-icons/io5";
@@ -14,25 +14,38 @@ import { CiSearch } from "react-icons/ci";
 import { IoIosAdd } from "react-icons/io";
 import { MdOutlineGroups2 } from "react-icons/md";
 import { CiLogout } from "react-icons/ci";
+import { IoIosNotifications } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
+const SearchDialog= lazy(()=> import("../specific/Search"))
+const NotificationDialog= lazy(()=> import("../specific/Notifications"))
+const NewGroupDialog= lazy(()=> import("../specific/NewGroup"))
+
 const Header = () => {
+
+  const [isMobile, setisMobile] = useState(false)
+  const [isSearch, setIsSearch] = useState(false)
+  const [isGroup, setIsGroup] = useState(false)
+  const [isNotification, setIsNotification] = useState(false)
   
   const navigate = useNavigate();
   const handleMobile = () => {
-    console.log("mobile");
+    setisMobile(!isMobile)
   };
   const openSearchDialog = () => {
-    console.log("openSearchDialog");
+    setIsSearch(!isSearch)
   };
   const openCreateGroup = () => {
-    console.log("openCreateGroup");
+    setIsGroup(!isGroup)
   };
   const navinageToGroups = () => {
     navigate("/groups");
   };
   const handleLogout = () => {
     console.log("handleLogout");
+  };
+  const openNotifications = () => {
+    setIsNotification(!isNotification)
   };
 
 
@@ -46,7 +59,7 @@ const Header = () => {
                 <IoMenu />
               </IconButton>
             </Box>
-            <Typography variant="h6" sx={{ display: { sm: "block" } }}>
+            <Typography variant="h6" sx={{ display: {xs:"none", sm: "block" } }}>
               Gosspis
             </Typography>
             <Box sx={{ flexGrow: 1 }} />
@@ -82,6 +95,15 @@ const Header = () => {
                 <MdOutlineGroups2 />
               </IconButton>
             </Tooltip>
+            <Tooltip title="Notifications">
+              <IconButton
+                color="inherit"
+                size="large"
+                onClick={openNotifications}
+              >
+                <IoIosNotifications/>
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Log Out">
               <IconButton
                 color="inherit"
@@ -94,6 +116,21 @@ const Header = () => {
           </Toolbar>
         </AppBar>
       </Box>
+      {isSearch && 
+        <Suspense fallback={<div>loading....</div>}>
+          <SearchDialog/>
+        </Suspense>
+      }
+      {isNotification && 
+        <Suspense fallback={<div>loading....</div>}>
+          <NotificationDialog/>
+        </Suspense>
+      }
+      {isGroup && 
+        <Suspense fallback={<div>loading....</div>}>
+          <NewGroupDialog/>
+        </Suspense>
+      }
     </>
   );
 };
