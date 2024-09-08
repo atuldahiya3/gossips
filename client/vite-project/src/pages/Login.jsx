@@ -2,7 +2,7 @@
 import { Avatar, Button, Container,Paper, TextField, Typography,Stack, IconButton } from "@mui/material";
 import { useState } from "react";
 import { FaCamera } from "react-icons/fa";
-import {useFileHandler, useInputValidation, useStrongPassword} from "6pp"
+import {useFileHandler, useInputValidation} from "6pp"
 
 import { VirtuallyHiddenIcon } from "../components/StylesComponents";
 import { usernameValidator } from "../utils/Validators";
@@ -25,6 +25,8 @@ function Login() {
     }
 
   return (
+    <div
+    style={{backgroundImage:"linear-gradient(rgba(200,200,200,0.5),rgba(120,110,230,0.8))"}}>
     <Container component={"main"} maxWidth="xs" sx={{height:"100vh", display:"flex", justifyContent:"center", alignItems:"center"}}>
         <Paper elevation={3} sx={{padding: "2rem", display:"flex", alignItems:"center", flexDirection:"column"}}>
             {isLogin ? (
@@ -111,6 +113,7 @@ function Login() {
         </Paper>
 
     </Container>
+    </div>
   )
 }
 
