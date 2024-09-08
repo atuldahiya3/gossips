@@ -1,6 +1,7 @@
 import ProtectRoutes from "./components/Auth/ProtectRoutes"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { lazy } from "react"
+import { Suspense, lazy } from "react"
+import { LayoutLoader } from "./components/Layout/Loaders";
 
 const Home=lazy(() => import("./pages/Home")); 
 const Chat=lazy(() => import("./pages/Chat")); 
@@ -13,6 +14,7 @@ const App=()=> {
   return (
    
       <BrowserRouter>
+      <Suspense fallback={<LayoutLoader/>}>
       <Routes>
         <Route element={<ProtectRoutes user={user}/>}>
           <Route path='/' element={<Home/>}/>
@@ -28,6 +30,7 @@ const App=()=> {
         <Route path="*" element={<NotFound/>} />   {/* if some unmatched url is typed then it will be redirected to not found page */}
 
       </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }
