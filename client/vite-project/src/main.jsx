@@ -9,7 +9,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HelmetProvider>
       <CssBaseline/>
+      <div onClick={(e)=>e.preventDefault()}>
         <App />
+      </div>
     </HelmetProvider>
   </StrictMode>,
 )
