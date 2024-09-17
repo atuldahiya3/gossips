@@ -27,7 +27,7 @@ const AppLayout = () => (WrappedComponent) => {
             item
             sm={4}
             md={3}
-            sx={{ xs: "none", sm: "block" }}
+            sx={{ xs: "none", sm: "block",bgcolor: "#FFC1CC" }}
             height={"100%"}
           >
             <ChatList
@@ -48,7 +48,7 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{
               display: { xs: "none", sm: "block" },
               padding: "2rem",
-              bgcolor: "pink",
+              bgcolor: "#FFC1CC",
             }}
             height={"100%"}
           >
