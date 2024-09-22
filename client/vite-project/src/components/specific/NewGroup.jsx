@@ -8,9 +8,9 @@ import UserItem from "../Shared/UserItem"
 import { useInputValidation } from "6pp";
 
 const NewGroup = () => {
+  const groupName=useInputValidation("")
   const [members,SetMembers]=useState(sampleUsers)
   const [selectedMembers,SetSelectedMembers]=useState("")
-  const groupName=useInputValidation("")
   const selectMemberHandler=(id)=>{
     SetSelectedMembers((prev)=> prev.includes(id)? prev.filter((currElement)=> currElement != id) : [...prev, id])
   }

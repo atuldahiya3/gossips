@@ -2,9 +2,10 @@ import React, { memo } from 'react'
 import { Avatar, Box, Stack, Typography } from '@mui/material'
 import { StyledLink } from '../StylesComponents'
 import AvatarCard from './AvatarCard'
+import { lightPink, orange } from '../../constants/colour'
 
 const ChatItem = ({
-    Avatar = ["https://www.w3schools.com/howto/img_avatar.png"],
+    avatar = [],
     name,
     _id,
     groupChat=false,
@@ -21,11 +22,11 @@ const ChatItem = ({
             gap:"1rem",
             alignItems:"center",
             padding:"1rem",
-            backgroundColor:sameSender? "#ff9999": "unset",
-            color:sameSender? "white": "unset",
+            backgroundColor:sameSender? lightPink: "unset",
+            color:sameSender? orange: "unset",
             position:"relative"
         }}>
-            <AvatarCard avatar={Avatar} />
+            <AvatarCard avatar={avatar} />
             <Stack>
                 <Typography>{name}</Typography>
                 {newMessageAlert && (

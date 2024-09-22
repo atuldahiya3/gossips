@@ -6,7 +6,7 @@ import { IoPersonRemoveOutline } from "react-icons/io5";
 
 
 
-const UserItem = ({ user, handler, isHandlerLoading, isAdded=false }) => {
+const UserItem = ({ user, handler, isHandlerLoading, isAdded=false, styling={} }) => {
   const { _id, name, avatar } = user;
 
   return (
@@ -16,9 +16,9 @@ const UserItem = ({ user, handler, isHandlerLoading, isAdded=false }) => {
         alignItems={"center"}
         spacing={"1rem"}
         width={"100%"}
-        // {...styling}
+        {...styling}
       >
-        <Avatar />
+        <Avatar  />
         <Typography
           variant="body1"
           sx={{

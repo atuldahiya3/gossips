@@ -14,7 +14,7 @@ export const LayoutLoader=()=>{
                 {
                     Array.from({length:10}).map((_, index)=>(
 
-                        <Skeleton variant='rectangular' height="5rem" />
+                        <Skeleton key={index} variant='rectangular' height="5rem" />
                     ))
                 }
             </Stack>

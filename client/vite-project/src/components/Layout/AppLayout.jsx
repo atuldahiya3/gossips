@@ -7,6 +7,7 @@ import ChatList from "../specific/ChatList";
 import { sampleChats } from "../../constants/SampleData";
 import { useParams } from "react-router-dom";
 import Profile from "../specific/Profile";
+import { pink } from "../../constants/colour";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -27,7 +28,7 @@ const AppLayout = () => (WrappedComponent) => {
             item
             sm={4}
             md={3}
-            sx={{ xs: "none", sm: "block",bgcolor: "#FFC1CC" }}
+            sx={{ xs: "none", sm: "block",bgcolor: pink }}
             height={"100%"}
           >
             <ChatList
@@ -48,7 +49,7 @@ const AppLayout = () => (WrappedComponent) => {
             sx={{
               display: { xs: "none", sm: "block" },
               padding: "2rem",
-              bgcolor: "#FFC1CC",
+              bgcolor: pink,
             }}
             height={"100%"}
           >

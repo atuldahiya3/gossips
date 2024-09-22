@@ -15,9 +15,9 @@ const ChatList = (
   ) => {
     return (
       
-        <Stack width={w} direction="column">
+        <Stack width={w} direction="column" overflow={"auto"}  sx={{ height: "100%" }}>
           {chats?.map((data,index) =>{
-            const { Avatar, _id, name, groupChat, members}=data;
+            const { avatar, _id, name, groupChat, members}=data;
             const newMessagesAlert=newMessageAlert.find(
                 ({chatId})=> chatId === _id
             )
@@ -25,7 +25,7 @@ const ChatList = (
               return <ChatItem 
               index={index}
               newMessageAlert={newMessagesAlert}
-              avatar={Avatar}
+              avatar={avatar}
               isOnline={isOnline}
               name={name}
               key={_id}

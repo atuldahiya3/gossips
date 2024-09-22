@@ -1,1 +1,6 @@
 export const orange="#ea7070"
+export const pink="#FFC1CC"
+export const lightPink="#ffd1dc"
+export const grayColour="#D3D3D3"
+export const lightBlue="#2694ab"
+export const mattblack="#1c1c1c"
