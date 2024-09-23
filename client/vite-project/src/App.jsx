@@ -3,11 +3,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { Suspense, lazy } from "react"
 import { LayoutLoader } from "./components/Layout/Loaders";
 
+
 const Home=lazy(() => import("./pages/Home")); 
 const Chat=lazy(() => import("./pages/Chat")); 
 const Group=lazy(() => import("./pages/Group")); 
 const Login=lazy(() => import("./pages/Login")); 
 const NotFound=lazy(() => import("./pages/NotFound")); 
+const Admin=lazy(() => import("./pages/Admin/Admin")); 
+const Dashboard=lazy(() => import("./pages/Admin/Dashboard")); 
 const user=true;
 const App=()=> {
 
@@ -26,7 +29,8 @@ const App=()=> {
           <Login/>
         </ProtectRoutes>
         }/>
-        
+        <Route path="/admin" element={<Admin/>}/>
+        <Route path="/admin/dashboard" element={<Dashboard/>}/>
         <Route path="*" element={<NotFound/>} />   {/* if some unmatched url is typed then it will be redirected to not found page */}
 
       </Routes>
