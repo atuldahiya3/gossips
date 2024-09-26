@@ -1,4 +1,4 @@
-import { model, Model, models, Schema, Types } from "mongoose";
+import mongoose,{ model, Model, models, Schema } from "mongoose";
 
 const schema= new Schema({
     sender:{
