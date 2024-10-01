@@ -1,7 +1,11 @@
-import { multer } from "multer";
+import multer from "multer";
 
-export const multerUpload=multer({
-    limit:{
-        fileSize:1024*1024*5
+const multerUpload = multer({
+    limits: {
+        fileSize: 1024 * 1024 * 5  // 5MB limit
     }
-})
+});
+
+const singleAvatar= multerUpload.single('avatar')  // single('avatar') means we are expecting a single file
+
+export {singleAvatar}
