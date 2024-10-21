@@ -1,5 +1,5 @@
 import express from "express"
-import { acceptFriendRequest, logOut, login, newUser, notifications, searchUser, sendFriendRequest } from "../controllers/user.js";
+import { acceptFriendRequest, getMyFriends, logOut, login, newUser, notifications, searchUser, sendFriendRequest } from "../controllers/user.js";
 import { singleAvatar } from "../middlewares/multer.js";
 import { getMyProfile } from "../controllers/user.js";
 import { isAuthenticated } from "../middlewares/auth.js";
@@ -16,6 +16,7 @@ app.get("/searchUser",isAuthenticated,searchUser)
 app.put("/sendRequest",isAuthenticated,sendFriendRequest)
 app.put("/acceptRequest",isAuthenticated,acceptFriendRequest)
 app.get("/notifications",isAuthenticated,notifications)
+app.get("/friends",isAuthenticated,getMyFriends)
 
 
 export default app;
