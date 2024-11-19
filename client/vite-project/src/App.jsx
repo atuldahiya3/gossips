@@ -1,7 +1,9 @@
 import ProtectRoutes from "./components/Auth/ProtectRoutes"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { Suspense, lazy } from "react"
+import { Suspense, lazy, useEffect } from "react"
 import { LayoutLoader } from "./components/Layout/Loaders";
+import axios from 'axios';
+import { server } from "./constants/config";
 
 
 const Home=lazy(() => import("./pages/Home")); 
@@ -13,6 +15,13 @@ const Admin=lazy(() => import("./pages/Admin/Admin"));
 const Dashboard=lazy(() => import("./pages/Admin/Dashboard")); 
 const user=true;
 const App=()=> {
+
+  useEffect(()=>{
+    axios.get(`${server}/user/myProfile`).then((res)=>{
+      console.log("res",res);
+    }).catch((err)=>console.log("error getting user details",err))
+    
+  },[])
 
   return (
    
