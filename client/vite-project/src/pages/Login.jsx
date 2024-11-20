@@ -15,6 +15,11 @@ import { useFileHandler, useInputValidation } from "6pp";
 
 import { VirtuallyHiddenIcon } from "../components/StylesComponents";
 import { usernameValidator } from "../utils/Validators";
+import axios from "axios";
+import { server } from "../constants/config";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { userExists } from "../redux/reducers/auth";
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,12 +29,52 @@ function Login() {
   // const password=useStrongPassword() //initial password must be empty
   const password = useInputValidation(""); //not using passwordValidator for testing only
   const avatar = useFileHandler("single"); // 10 represents max size in mb
-
-  const handleLogIn = (e) => {
+  const dispatch=useDispatch();
+  const handleLogIn =async (e) => {
     e.preventDefault();
+    const config={
+      withCredentials:true,
+      headers:{
+        "Content-type":"application/json"
+      }
+    }
+    try{
+      const response= await axios.post(`${server}/user/login`,{userName:username.value, password:password.value},config)
+      console.log("response on login",response);
+      dispatch(userExists(true))
+      toast.success(response.data.message)
+      localStorage.setItem("token",response.data.token)
+      localStorage.setItem("user",response.data.user)
+    }catch(error){
+      toast.error(`${error.response.data.message}, Get lost Bitch`)
+      console.log("error logging in",error);
+    }
   };
-  const handleSignUp = (e) => {
+  const handleSignUp =async(e) => {
     e.preventDefault();
+
+    const formData=new FormData();
+    formData.append("name",name.value)
+    formData.append("status",status.value)
+    formData.append("username",username.value)
+    formData.append("password",password.value)
+    formData.append("avatar",avatar.file)
+
+    try{
+      const response= await axios.post(`${server}/user/new`,formData,{
+        withCredentials:true,
+        headers:{
+          "Content-type":"multipart/form-data"
+        }
+      })
+      console.log("response on register",response);
+      toast.success(response.data.message)
+      localStorage.setItem("token",response.data.token)
+      localStorage.setItem("user",response.data.user)
+    }catch(err){
+      toast.error(`${error.response.data.message}, Get lost Bitch`)
+      console.log("error creating user",err);
+    }
   };
 
   return (
@@ -93,6 +138,7 @@ function Login() {
                   variant="contained"
                   color="primary"
                   type="submit"
+                  onClick={handleLogIn}
                 >
                   Login
                 </Button>
