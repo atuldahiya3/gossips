@@ -11,6 +11,8 @@ import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
 import adminRoute from "../server/routes/admin.js";
 import chatRoute from "../server/routes/chat.js";
 import userRoute from "../server/routes/user.js";
+import cors from "cors";
+import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config({
     path:'./.env'
@@ -21,6 +23,11 @@ const mongoURI=process.env.MONGO_URI
 // const userSocketIds=new Map()
 
 connectDB(mongoURI);
+cloudinary.config({
+    cloud_name:process.env.CLOUDINARY_NAME,
+    api_key:process.env.CLOUDINARY_API_KEY,
+    api_secret:process.env.CLOUDINARY_API_SECRET
+})
 // createUser(10);
 const app=express();
 const server=createServer(app)
@@ -31,7 +38,10 @@ app.use(express.urlencoded());  // to access form data
 
 app.use(cookieParser())
 
-
+app.use(cors({
+    origin:["http://127.0.0.1:5173","http://localhost:3000", process.env.CLIENT_URL],
+    credentials:true
+}))
 
 app.use("/api/v1/user",userRoute)
 app.use("/api/v1/chat",chatRoute)

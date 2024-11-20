@@ -1,9 +1,20 @@
 import { Avatar, Stack, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 import moment from "moment"
+import axios from 'axios'
+import { useDispatch } from 'react-redux'
+import { userNotExists } from '../../redux/reducers/auth'
+import { server } from '../../constants/config'
 
 
 const Profile = () => {
+  const dispatch=useDispatch();
+  // useEffect(()=>{
+  //   axios.get(`${server}/user/myProfile`).then((res)=>{
+  //     console.log("res",res);
+  //   }).catch((err)=>dispatch(userNotExists()))
+    
+  // },[dispatch])
   return (
     <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
       <Avatar

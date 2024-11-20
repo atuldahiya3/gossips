@@ -4,6 +4,9 @@ import { Suspense, lazy, useEffect } from "react"
 import { LayoutLoader } from "./components/Layout/Loaders";
 import axios from 'axios';
 import { server } from "./constants/config";
+import { useDispatch, useSelector } from "react-redux";
+import { userNotExists } from "./redux/reducers/auth";
+import { Toaster } from "react-hot-toast";
 
 
 const Home=lazy(() => import("./pages/Home")); 
@@ -13,17 +16,18 @@ const Login=lazy(() => import("./pages/Login"));
 const NotFound=lazy(() => import("./pages/NotFound")); 
 const Admin=lazy(() => import("./pages/Admin/Admin")); 
 const Dashboard=lazy(() => import("./pages/Admin/Dashboard")); 
-const user=true;
 const App=()=> {
+  const {user,isLoading}=useSelector(state=>state.auth);
+  const dispatch=useDispatch()
 
   useEffect(()=>{
     axios.get(`${server}/user/myProfile`).then((res)=>{
       console.log("res",res);
-    }).catch((err)=>console.log("error getting user details",err))
+    }).catch((err)=>dispatch(userNotExists()))
     
-  },[])
+  },[dispatch])
 
-  return (
+  return isLoading?(<LayoutLoader/>) : (
    
       <BrowserRouter>
       <Suspense fallback={<LayoutLoader/>}>
@@ -44,6 +48,7 @@ const App=()=> {
 
       </Routes>
       </Suspense>
+      <Toaster position="botton-center" />
     </BrowserRouter>
   )
 }
