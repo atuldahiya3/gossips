@@ -1,6 +1,6 @@
 import { User } from "../models/user.js";
 import { Chat } from "../models/chat.js";
-import { cookieOptions, emitEvent, sendToken } from "../utils/features.js";
+import { cookieOptions, emitEvent, sendToken, uploadFilesToCloudinary } from "../utils/features.js";
 import { compare } from "bcrypt";
 import { Request } from "../models/request.js";
 import { NEW_REQUEST, REFETCH_CHATS } from "../constants/events.js";
@@ -10,9 +10,12 @@ import { getOtherMembers } from "../lib/helper.js";
 const newUser = async (req, res) => {
   try {
     const { name, userName, password, bio } = req.body;
+
+    const file=req.file
+    const result=await uploadFilesToCloudinary([file])
     const avatar = {
-      public_id: "aa",
-      url: "aa",
+      public_id: result[0].public_id,
+      url: result[0].sequreUrl,
     };
     const user = await User.create({
       name,
@@ -62,6 +65,12 @@ const getMyProfile = async (req, res) => {
 
 const logOut = async (req, res) => {
   try {
+    res.cookie('gossips-token', '', {
+      httpOnly: true,
+      expires: new Date(0),
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
     return res
       .status(200)
       .cookie("gossips-token", "", { ...cookieOptions, maxAge: 0 })

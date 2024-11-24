@@ -7,3 +7,5 @@ export const getOtherMembers=(members,user_id)=>{
 // export const getSockets=(users)=>{
 //     return users.map((user)=> userSocketIds.get(user._id.toString()))
 // }
+
+export const getBase64=(file)=> `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
