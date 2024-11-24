@@ -17,6 +17,11 @@ import { MdOutlineGroups2 } from "react-icons/md";
 import { CiLogout } from "react-icons/ci";
 import { IoIosNotifications } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { server } from "../../constants/config";
+import { useDispatch } from "react-redux";
+import { userNotExists } from "../../redux/reducers/auth";
+import toast from "react-hot-toast";
 
 const SearchDialog= lazy(()=> import("../specific/Search"))
 const NotificationDialog= lazy(()=> import("../specific/Notifications"))
@@ -28,6 +33,7 @@ const Header = () => {
   const [isSearch, setIsSearch] = useState(false)
   const [isGroup, setIsGroup] = useState(false)
   const [isNotification, setIsNotification] = useState(false)
+  const dispatch=useDispatch();
   
   const navigate = useNavigate();
   const handleMobile = () => {
@@ -42,7 +48,14 @@ const Header = () => {
   const navinageToGroups = () => {
     navigate("/groups");
   };
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try{
+      const {data}=await axios.get(`${server}/user/logout`,{withCredentials:"true"})
+      dispatch(userNotExists())
+      toast.success(data.message)
+    }catch(err){
+      console.log(err);
+    }
     console.log("handleLogout");
   };
   const openNotifications = () => {

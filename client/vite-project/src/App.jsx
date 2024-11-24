@@ -5,7 +5,7 @@ import { LayoutLoader } from "./components/Layout/Loaders";
 import axios from 'axios';
 import { server } from "./constants/config";
 import { useDispatch, useSelector } from "react-redux";
-import { userNotExists } from "./redux/reducers/auth";
+import { userExists, userNotExists } from "./redux/reducers/auth";
 import { Toaster } from "react-hot-toast";
 
 
@@ -21,7 +21,8 @@ const App=()=> {
   const dispatch=useDispatch()
 
   useEffect(()=>{
-    axios.get(`${server}/user/myProfile`).then((res)=>{
+    axios.get(`${server}/user/myProfile`, {withCredentials:"true"}).then((res)=>{
+      dispatch(userExists(res.data.data))
       console.log("res",res);
     }).catch((err)=>dispatch(userNotExists()))
     

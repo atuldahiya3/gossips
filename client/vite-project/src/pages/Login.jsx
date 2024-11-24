@@ -9,17 +9,19 @@ import {
   Stack,
   IconButton,
 } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import { useFileHandler, useInputValidation } from "6pp";
 
-import { VirtuallyHiddenIcon } from "../components/StylesComponents";
 import { usernameValidator } from "../utils/Validators";
 import axios from "axios";
 import { server } from "../constants/config";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { userExists } from "../redux/reducers/auth";
+import { VisuallyHiddenInput } from "../components/StylesComponents";
+import { FaCameraRetro } from "react-icons/fa";
+
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -29,54 +31,59 @@ function Login() {
   // const password=useStrongPassword() //initial password must be empty
   const password = useInputValidation(""); //not using passwordValidator for testing only
   const avatar = useFileHandler("single"); // 10 represents max size in mb
-  const dispatch=useDispatch();
-  const handleLogIn =async (e) => {
+  const dispatch = useDispatch();
+
+  const handleLogIn = async (e) => {
     e.preventDefault();
-    const config={
-      withCredentials:true,
-      headers:{
-        "Content-type":"application/json"
-      }
-    }
-    try{
-      const response= await axios.post(`${server}/user/login`,{userName:username.value, password:password.value},config)
-      console.log("response on login",response);
-      dispatch(userExists(true))
-      toast.success(response.data.message)
-      localStorage.setItem("token",response.data.token)
-      localStorage.setItem("user",response.data.user)
-    }catch(error){
-      toast.error(`${error.response.data.message}, Get lost Bitch`)
-      console.log("error logging in",error);
+    const config = {
+      withCredentials: true,
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    try {
+      const response = await axios.post(
+        `${server}/user/login`,
+        { userName: username.value, password: password.value },
+        config
+      );
+      console.log("response on login", response);
+      dispatch(userExists(response.data.user));
+      toast.success(response.data.message);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", response.data.user);
+    } catch (error) {
+      toast.error(`${error.response.data.message}, Get lost Bitch`);
+      console.log("error logging in", error);
     }
   };
-  const handleSignUp =async(e) => {
+  
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
-    const formData=new FormData();
-    formData.append("name",name.value)
-    formData.append("status",status.value)
-    formData.append("username",username.value)
-    formData.append("password",password.value)
-    formData.append("avatar",avatar.file)
+    const formData = new FormData();
+    formData.append("name", name.value);
+    formData.append("bio", status.value);
+    formData.append("userName", username.value);
+    formData.append("password", password.value);
+    formData.append("avatar", avatar.file);
 
-    try{
-      const response= await axios.post(`${server}/user/new`,formData,{
-        withCredentials:true,
-        headers:{
-          "Content-type":"multipart/form-data"
-        }
-      })
-      console.log("response on register",response);
-      toast.success(response.data.message)
-      localStorage.setItem("token",response.data.token)
-      localStorage.setItem("user",response.data.user)
-    }catch(err){
-      toast.error(`${error.response.data.message}, Get lost Bitch`)
-      console.log("error creating user",err);
+    try {
+      const response = await axios.post(`${server}/user/new`, formData, {
+        withCredentials: true,
+        headers: {
+          "Content-type": "multipart/form-data",
+        },
+      });
+      console.log("response on register", response);
+      toast.success(response.data.message);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", response.data.user);
+    } catch (err) {
+      toast.error(`${err.response.data.message}, Get lost Bitch`);
+      console.log("error creating user", err);
     }
   };
-
   return (
     <div
       style={{
@@ -151,14 +158,14 @@ function Login() {
                   color="primary"
                   onClick={() => setIsLogin(false)}
                 >
-                  Sign Up
+                  Create a new account
                 </Button>
               </form>
             </>
           ) : (
             <>
               <Typography variant="h5">Register</Typography>
-              <Stack
+              {/* <Stack
                 sx={{ width: "10rem", position: "relative", margin: "auto" }}
               >
                 <Avatar
@@ -171,28 +178,82 @@ function Login() {
                   </Typography>
                 )}
                 <IconButton
-                  sx={{
-                    position: "absolute",
-                    // top:"10px",
-                    bottom: "-30px",
-                    right: "30px",
-                    left: "30px",
-                    color: "black",
-                    backgroundColor: "rgba(0,0,0,0,5)",
-                    ":hover": {
-                      backgroundColor: "rgba(0,0,0,0,7)",
-                    },
+                    sx={{
+                      position: "absolute",
+                      bottom: "0",
+                      right: "0",
+                      color: "white",
+                      bgcolor: "rgba(0,0,0,0.5)",
+                      ":hover": {
+                        bgcolor: "rgba(0,0,0,0.7)",
+                      },
+                    }}
+                    component="label"
+                  >
+                    <>
+                      <FaCameraRetro />
+                      <VisuallyHiddenInput
+                        type="file"
+                        onChange={avatar.changeHandler}
+                      />
+                    </>
+                  </IconButton>
+              </Stack>           */}
+              <Stack
+                sx={{ width: "10rem", position: "relative", margin: "auto" }}
+              >
+                <Avatar
+                  sx={{ height: "10rem", width: "10rem", objectFit: "contain" }}
+                  src={avatar.preview}
+                />
+                {avatar.error && (
+                  <Typography color="error" variant="caption">
+                    {avatar.error}
+                  </Typography>
+                )}
+                
+                {/* Updated photo input section using label */}
+                <label
+                  htmlFor="photo-upload"
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    cursor: 'pointer'
                   }}
-                  component="label"
                 >
-                  <>
-                    <FaCamera />
-                    <VirtuallyHiddenIcon
-                      type="file"
-                      onChange={avatar.changeHandler}
-                    />
-                  </>
-                </IconButton>
+                  <IconButton
+                    sx={{
+                      color: "white",
+                      bgcolor: "rgba(0,0,0,0.5)",
+                      ":hover": {
+                        bgcolor: "rgba(0,0,0,0.7)",
+                      },
+                      zIndex: 1,
+                    }}
+                  >
+                    <FaCameraRetro />
+                  </IconButton>
+                </label>
+                
+                <input
+                  id="photo-upload"
+                  name="photo-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={avatar.changeHandler}
+                  style={{ 
+                    display: 'none',
+                    position: 'absolute',
+                    width: '1px',
+                    height: '1px',
+                    padding: 0,
+                    margin: '-1px',
+                    overflow: 'hidden',
+                    clip: 'rect(0,0,0,0)',
+                    border: 0
+                  }}
+                />
               </Stack>
               <form
                 style={{
@@ -256,6 +317,7 @@ function Login() {
                   variant="contained"
                   color="primary"
                   type="submit"
+                  onClick={handleSignUp}
                 >
                   Sign Up
                 </Button>
@@ -268,7 +330,7 @@ function Login() {
                   color="primary"
                   onClick={() => setIsLogin(true)}
                 >
-                  Login
+                  Already have an account?
                 </Button>
               </form>
             </>

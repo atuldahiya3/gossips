@@ -4,9 +4,10 @@ import { singleAvatar } from "../middlewares/multer.js";
 import { getMyProfile } from "../controllers/user.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 import { loginValidator, newRequestValidator, registerValidator, validationHandler } from "../lib/validators.js";
+import cookieParser from "cookie-parser";
 
 const app = express.Router();
-
+app.use(cookieParser());
 app.post("/new",singleAvatar,registerValidator(),validationHandler,newUser)
 app.post("/login",loginValidator(),validationHandler,login)
 

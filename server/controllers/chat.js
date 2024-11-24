@@ -35,21 +35,21 @@ const newGroupChat = async (req, res, next) => {
 
 const getMyChats = async (req, res, next) => {
   try {
-    const chats = await Chat.find({ members: req.user })
-    .populate(
-      "members",
-      "name avatar"
-    );
+    const chats = await Chat.find({
+      members: req.user,
+      groupChat: false,
+    }).populate("members", "name avatar");
 
     const transformedChats = chats.map(({ _id, name, members, groupChat }) => {
       const otherMember = getOtherMembers(members, req.user);
+
       return {
         _id,
         groupChat,
         avatar: groupChat
-          ? members.slice(0, 3).map(({ avatar }) => avatar.url)
-          : [otherMember.avatar.url],
-        name: groupChat ? name : otherMember.name,
+          ? members.slice(0, 3).map(({ avatar }) => avatar?.url) // Handle missing avatars
+          : [otherMember?.avatar?.url], // Handle missing otherMember or avatar
+        name: groupChat ? name : otherMember?.name, // Handle missing name
         members: members.reduce((prev, curr) => {
           if (curr._id.toString() !== req.user.toString()) {
             prev.push(curr._id);
@@ -64,6 +64,7 @@ const getMyChats = async (req, res, next) => {
       chats: transformedChats,
     });
   } catch (error) {
+    console.error("Error in getMyChats:", error.message); // Log error for debugging
     res.status(500).json({ error: error.message });
   }
 };
