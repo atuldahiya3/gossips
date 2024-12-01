@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import Profile from "../specific/Profile";
 import { pink } from "../../constants/colour";
 import { useMyChatsQuery } from "../../redux/api/api";
+import useErrors from "../../hooks/hook";
 
 const AppLayout = () => (WrappedComponent) => {
   return (props) => {
@@ -16,7 +17,8 @@ const AppLayout = () => (WrappedComponent) => {
     const chatId = params.chatId;
     
     const {isLoading,data,isError,error,refetch}=useMyChatsQuery("")
-    console.log("data",data);
+    console.log("my chat data",data);
+    // useErrors({isError,error})
     const handleDeleteChat=(e,_id,groupChat)=>{
       e.preventDefault()
       console.log(e,_id,groupChat);

@@ -19,20 +19,19 @@ import { IoIosNotifications } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { server } from "../../constants/config";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userNotExists } from "../../redux/reducers/auth";
 import toast from "react-hot-toast";
+import { setIsNotification, setIsSearch } from "../../redux/reducers/misc";
 
 const SearchDialog= lazy(()=> import("../specific/Search"))
 const NotificationDialog= lazy(()=> import("../specific/Notifications"))
 const NewGroupDialog= lazy(()=> import("../specific/NewGroup"))
 
 const Header = () => {
-
+  const{isSearch,isNotification}=useSelector(state=>state.misc)
   const [isMobile, setisMobile] = useState(false)
-  const [isSearch, setIsSearch] = useState(false)
   const [isGroup, setIsGroup] = useState(false)
-  const [isNotification, setIsNotification] = useState(false)
   const dispatch=useDispatch();
   
   const navigate = useNavigate();
@@ -40,7 +39,7 @@ const Header = () => {
     setisMobile(!isMobile)
   };
   const openSearchDialog = () => {
-    setIsSearch(!isSearch)
+    dispatch(setIsSearch(true))
   };
   const openCreateGroup = () => {
     setIsGroup(!isGroup)
@@ -59,7 +58,7 @@ const Header = () => {
     console.log("handleLogout");
   };
   const openNotifications = () => {
-    setIsNotification(!isNotification)
+    dispatch(setIsNotification(!isNotification))
   };
 
 

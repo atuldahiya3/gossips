@@ -185,7 +185,7 @@ const acceptFriendRequest = async (req, res) => {
 
 const notifications = async (req, res) => {
   try {
-    const myNotifications = await Request.find({ sender: req.user }).populate("sender", "name avatar");
+    const myNotifications = await Request.find({ reciever: req.user }).populate("sender", "name avatar");
 
     return res.status(200).json({
       success: true,
