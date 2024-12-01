@@ -1,38 +1,73 @@
-import { Avatar, Button, Dialog, DialogTitle, IconButton, ListItem, Stack, Typography } from '@mui/material'
-import React, { memo } from 'react'
-import { sampleNotifications } from '../../constants/SampleData'
-import { IoIosAdd } from 'react-icons/io'
+import {
+  Avatar,
+  Button,
+  Dialog,
+  DialogTitle,
+  IconButton,
+  ListItem,
+  Stack,
+  Typography,
+} from "@mui/material";
+import React, { memo, useEffect } from "react";
+import { sampleNotifications } from "../../constants/SampleData";
+import { IoIosAdd } from "react-icons/io";
 import { FaCheck } from "react-icons/fa6";
 import { GiCrossedSwords } from "react-icons/gi";
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { setIsNotification } from "../../redux/reducers/misc";
+import { useAcceptFriendRequestMutation, useGetNotificationQuery } from "../../redux/api/api";
+import toast from "react-hot-toast";
 
 const Notifications = () => {
-
-  const friendRequestHandler=({_id, accept})=>{
-    console.log("request ");
-  }
+  const { isNotification } = useSelector((state) => state.misc);
+  const [acceptFriendRequest]=useAcceptFriendRequestMutation()
+  const { isLoading, data, isError, error, refetch } =
+    useGetNotificationQuery("");
+  console.log("notif", data?.notifications);
+  const dispatch = useDispatch();
+  const friendRequestHandler = ({ _id, accept }) => {
+    const data={
+      "requestId":_id,
+      "accept":accept
+    }
+    console.log("request ",data);
+    acceptFriendRequest(data).then((res)=>{
+      console.log(res)
+      toast.success(res?.data?.message)
+    }).catch((e)=>{
+      toast.error("Something went wrong")
+      console.log(e);
+    })
+  };
+  const notificationCloseHandler = () => {
+    dispatch(setIsNotification(false));
+  };
 
   return (
-    <Dialog open>
-      <Stack p={{xs:"1rem", sm:"2rem"}} maxWidth={"25rem"}>
+    <Dialog open={isNotification} onClose={notificationCloseHandler}>
+      <Stack p={{ xs: "1rem", sm: "2rem" }} maxWidth={"25rem"}>
         <DialogTitle>Notifications</DialogTitle>
-        {
-          sampleNotifications.length>0 ?
-           <>
-            {sampleNotifications.map((i)=><NotificationItem sender={i.sender} _id={i._id} handler={friendRequestHandler} key={i._id}/>)}
-           </>
-            : 
+        {data?.notifications.length > 0 ? (
+          <>
+            {data?.notifications.map((i) => (
+              <NotificationItem
+                sender={i.sender}
+                _id={i._id}
+                handler={friendRequestHandler}
+                key={i._id}
+              />
+            ))}
+          </>
+        ) : (
           <Typography textAlign={"center"}>No notifications</Typography>
-        }
+        )}
       </Stack>
     </Dialog>
-  )
-}
+  );
+};
 
-const NotificationItem=memo(({sender,_id, handler})=>{
-
-  const {name, avatar}=sender
+const NotificationItem = memo(({ sender, _id, handler }) => {
+  const { name, avatar } = sender;
   return (
     <ListItem>
       <Stack
@@ -42,7 +77,7 @@ const NotificationItem=memo(({sender,_id, handler})=>{
         width={"100%"}
         // {...styling}
       >
-        <Avatar src={avatar} />
+        <Avatar src={avatar?.url} />
         <Typography
           variant="body1"
           sx={{
@@ -57,9 +92,15 @@ const NotificationItem=memo(({sender,_id, handler})=>{
         >
           {`${name} sent you a friend request`}
         </Typography>
-        <Stack direction={{xs:"column", sm:"row"}} gap={"1rem"}>
-          <FaCheck color='green' onClick={()=>handler({_id, accept:true})}/>
-          <GiCrossedSwords color='red'  onClick={()=>handler({_id, accept:false})}/>
+        <Stack direction={{ xs: "column", sm: "row" }} gap={"1rem"}>
+          <FaCheck
+            color="green"
+            onClick={() => handler({ _id, accept: true })}
+          />
+          <GiCrossedSwords
+            color="red"
+            onClick={() => handler({ _id, accept: false })}
+          />
         </Stack>
         {/* <IconButton
           size="small"
@@ -78,6 +119,6 @@ const NotificationItem=memo(({sender,_id, handler})=>{
       </Stack>
     </ListItem>
   );
-})
+});
 
-export default Notifications
+export default Notifications;
