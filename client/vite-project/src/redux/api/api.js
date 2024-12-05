@@ -7,7 +7,7 @@ const api = createApi({
         baseUrl: `${server}`,
         credentials: "include", // Include credentials globally
     }),
-    tagTypes: ["Chat","User","Notification"], // Define tags for cache management
+    tagTypes: ["Chat","User","Notification","Group"], // Define tags for cache management
     endpoints: (builder) => ({
         myChats: builder.query({
             query: () => ({
@@ -45,8 +45,14 @@ const api = createApi({
             }),
             providesTags: ["User","Chat"], // Attach "User" tag to this query
         }),
+        myGroups: builder.query({
+            query:()=>({
+                url: "/chat/mygroups",
+            }),
+            providesTags: ["Group"],
+        })
     }),
 });
 
 export default api;
-export const { useMyChatsQuery,useLazySearchUserQuery, useSendFriendRequestMutation,useGetNotificationQuery,useAcceptFriendRequestMutation } = api; // Export hooks
+export const { useMyChatsQuery,useLazySearchUserQuery, useSendFriendRequestMutation,useGetNotificationQuery,useAcceptFriendRequestMutation,useMyGroupsQuery } = api; // Export hooks
