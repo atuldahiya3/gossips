@@ -25,6 +25,7 @@ import { IoIosPersonAdd } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import NewGroup from "../components/specific/NewGroup";
 import UserItem from "../components/Shared/UserItem";
+import { useMyGroupsQuery } from "../redux/api/api";
 
 const ConfirmDeleteDialog = lazy(() =>
   import("../components/Dialogue/ConfirmDeleteDiaglog")
@@ -34,6 +35,7 @@ const AddMemberDialog = lazy(() =>
 );
 
 function Group() {
+  const {data,isLoading,error,isError}=useMyGroupsQuery()
   const chatId = useSearchParams()[0].get("group");
   const isAddMember = false;
   console.log("chatId", chatId);
