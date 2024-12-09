@@ -19,7 +19,7 @@ import { StyledLink } from "../components/StylesComponents";
 import AvatarCard from "../components/Shared/AvatarCard";
 import { sampleChats, sampleUsers } from "../constants/SampleData";
 import { orange } from "@mui/material/colors";
-import { MdOutlineEdit } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md"; 
 import { MdOutlineDone } from "react-icons/md";
 import { IoIosPersonAdd } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -36,6 +36,7 @@ const AddMemberDialog = lazy(() =>
 
 function Group() {
   const {data,isLoading,error,isError}=useMyGroupsQuery()
+  console.log("my groups", data);
   const chatId = useSearchParams()[0].get("group");
   const isAddMember = false;
   console.log("chatId", chatId);
@@ -43,6 +44,7 @@ function Group() {
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState();
   const [updatedGroupName, setUpdatedGroupName] = useState("");
+  const [groupMembers,setGroupMembers]=useState([])
   const [confirmDeleteDialog, setConfirmDeleteDialog] = useState(false);
 
   const navigate = useNavigate();
@@ -82,8 +84,15 @@ function Group() {
   }
   useEffect(() => {
     if(chatId){
-      setGroupName(`Group ka Naam ${chatId}`);
-      setUpdatedGroupName(`group ka naam nhi pta ${chatId}`);
+      const groupData=data?.groups.filter((group)=>group._id===chatId)
+      console.log("groupData",groupData);
+      if(groupData){
+        setGroupName(`${groupData[0].name}`);
+        setUpdatedGroupName(`${groupData[0].name}`);
+        setGroupMembers([...groupData[0].members])
+
+      }
+      console.log("members",groupMembers);
     }
 
     return () => {
@@ -200,7 +209,7 @@ function Group() {
           sm={4}
           bgcolor={pink}
         >
-          <GroupsList myGroups={sampleChats} />
+          <GroupsList myGroups={data?.groups} />
         </Grid>
         <Grid
           item
@@ -241,7 +250,7 @@ function Group() {
                 overflow={"auto"}
                 // bgcolor={lightPink}
               >
-                {sampleUsers.map((i) => (
+                {groupMembers.map((i) => (
                   <UserItem
                     key={i._id}
                     user={i}
