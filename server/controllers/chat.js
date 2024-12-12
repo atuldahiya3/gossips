@@ -324,6 +324,10 @@ const renameGroup = async (req, res) => {
   try {
     const { groupName } = req.body;
     const chat = await Chat.findById(req.params.id);
+    console.log("body",req.body);
+    if (!req.body.groupName) {
+      return res.status(400).json({ error: "Group name is required" });
+    }
 
     if (!chat)
       return res.status(404).json({ status: 404, message: "Chat not found" });

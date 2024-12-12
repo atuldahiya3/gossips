@@ -25,7 +25,7 @@ import { IoIosPersonAdd } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import NewGroup from "../components/specific/NewGroup";
 import UserItem from "../components/Shared/UserItem";
-import { useMyGroupsQuery } from "../redux/api/api";
+import { useMyGroupsQuery, useRenameGroupMutation } from "../redux/api/api";
 
 const ConfirmDeleteDialog = lazy(() =>
   import("../components/Dialogue/ConfirmDeleteDiaglog")
@@ -36,10 +36,10 @@ const AddMemberDialog = lazy(() =>
 
 function Group() {
   const {data,isLoading,error,isError}=useMyGroupsQuery()
-  console.log("my groups", data);
   const chatId = useSearchParams()[0].get("group");
   const isAddMember = false;
   console.log("chatId", chatId);
+  const [renameGroup]=useRenameGroupMutation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState();
@@ -60,8 +60,12 @@ function Group() {
   };
 
   const updateGroupNameHandler = () => {
+    const data={
+      "groupName":updatedGroupName
+    }
+    console.log("data sending",data);
+    renameGroup(chatId,data).then((data)=>console.log("successfully renamed",data)).catch((e)=>console.log("error renaming group",e))
     setIsEdit(false);
-    console.log(updatedGroupName);
   };
 
   const openAddMemberHandler = () => {
@@ -85,14 +89,12 @@ function Group() {
   useEffect(() => {
     if(chatId){
       const groupData=data?.groups.filter((group)=>group._id===chatId)
-      console.log("groupData",groupData);
       if(groupData){
         setGroupName(`${groupData[0].name}`);
         setUpdatedGroupName(`${groupData[0].name}`);
         setGroupMembers([...groupData[0].members])
 
       }
-      console.log("members",groupMembers);
     }
 
     return () => {
