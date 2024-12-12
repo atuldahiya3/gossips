@@ -66,6 +66,18 @@ const api = createApi({
         }),
         providesTags: ["Group", "Chat"],
       }),
+      renameGroup:builder.mutation({
+        query:(groupId,data)=>({
+            url:`chat/${groupId}`,
+            method:"PUT",
+            body:data,
+            credentials:"include",
+            headers: {
+              "Content-Type": "application/json", // Optional if automatically added
+            },
+        }),
+        providesTags: ["Group", "Chat"],
+      })
   }),
 });
 
@@ -79,4 +91,5 @@ export const {
   useMyGroupsQuery,
   useMyFriendsQuery,
   useCreateGroupMutation,
+  useRenameGroupMutation
 } = api; // Export hooks
