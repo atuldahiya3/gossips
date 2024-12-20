@@ -11,11 +11,15 @@ const newUser = async (req, res) => {
   try {
     const { name, userName, password, bio } = req.body;
 
-    const file=req.file
-    const result=await uploadFilesToCloudinary([file])
+    // const file=req.file
+    // const result=await uploadFilesToCloudinary([file])
+    // const avatar = {
+    //   public_id: result[0].public_id,
+    //   url: result[0].sequreUrl,
+    // };
     const avatar = {
-      public_id: result[0].public_id,
-      url: result[0].sequreUrl,
+      public_id: "1234",
+      url: "https://lumiere-a.akamaihd.net/v1/images/a_avatarpandorapedia_neytiri_16x9_1098_01_0e7d844a.jpeg?region=420%2C0%2C1080%2C1080",
     };
     const user = await User.create({
       name,
