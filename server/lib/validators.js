@@ -13,7 +13,7 @@ const registerValidator = () => [
   body("userName", "Please enter username").notEmpty(),
   body("password", "Please enter password").notEmpty(),
   body("bio", "Please enter bio").notEmpty(),
-  check("avatar").withMessage("Please upload avatar"),
+  // check("avatar").notEmpty().withMessage("Please upload avatar"),
 ];
 const loginValidator = () => [
   body("userName", "Please enter username").notEmpty(),
