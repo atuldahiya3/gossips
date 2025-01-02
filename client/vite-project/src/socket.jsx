@@ -10,7 +10,7 @@ const socketProvier = ({ children }) => {
     () =>
       io("https://localhost:3000", {
         withCredentials: true,
-        auth: { token: localStorage.getItem("token") },
+        auth: { token : localStorage.getItem("token") },
       }),
     []
   );
