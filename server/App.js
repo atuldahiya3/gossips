@@ -7,12 +7,13 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { v4 } from "uuid";
 import { NEW_MESSAGE, NEW_MESSAGE_ALERT } from "./constants/events.js";
-// import { getSockets } from "./lib/helper.js";
+import { getSockets } from "./lib/helper.js";
 import adminRoute from "../server/routes/admin.js";
 import chatRoute from "../server/routes/chat.js";
 import userRoute from "../server/routes/user.js";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
+import { Message } from "./models/message.js";
 
 dotenv.config({
     path:'./.env'
@@ -20,7 +21,7 @@ dotenv.config({
 
 const mongoURI=process.env.MONGO_URI
 
-// const userSocketIds=new Map()
+const userSocketIds=new Map()
 
 connectDB(mongoURI);
 cloudinary.config({
@@ -53,46 +54,48 @@ app.get("/",(req,res)=>{
 
 
 
-// io.on("connection",(socket)=>{
-//     const user={
-//         _id:"abab",
-//         name:"atul"
-//     }
-//     userSocketIds.set(user._id.toString(),socket.id)
-//     console.log("A user connected",socket.id);
+io.on("connection",(socket)=>{
+    socket.handshake.query.auth
+    const user={
+        _id:"abab",
+        name:"atul"
+    }
+    userSocketIds.set(user._id.toString(),socket.id)
+    console.log("A user connected",socket.id);
 
-//     socket.on(NEW_MESSAGE,async({chatId, members, messages})=>{
-//         const messageForRealTime={
-//             content:messages,
-//             _id:v4(),
-//             sender:{
-//                 _id:user._id,
-//                 name:user.name
-//             },
-//             chat:chatId,
-//             cretedAt:new Date().toISOString()
-//         }
+    socket.on(NEW_MESSAGE,async({chatId, members, messages})=>{
+        const messageForRealTime={
+            content:messages,
+            _id:v4(),
+            sender:{
+                _id:user._id,
+                name:user.name
+            },
+            chat:chatId,
+            cretedAt:new Date().toISOString()
+        }
 
-//         const messageForDb={
-//             content:messages,
-//             sender:user._id,
-//             chat:chatId,
-//         }
+        const messageForDb={
+            content:messages,
+            sender:user._id,
+            chat:chatId,
+        }
 
-//         const membersSocket=getSockets(members)
-//         io.to(membersSocket).emit(NEW_MESSAGE,{
-//             chatId,
-//             message:messageForRealTime
-//         })
-//         io.to(membersSocket).emit(NEW_MESSAGE_ALERT,{chatId})
-//         console.log("new message",messageForRealTime);
-//     })
+        const membersSocket=getSockets(members)
+        io.to(membersSocket).emit(NEW_MESSAGE,{
+            chatId,
+            message:messageForRealTime
+        })
+        io.to(membersSocket).emit(NEW_MESSAGE_ALERT,{chatId})
+        await Message.create(messageForDb)
+        console.log("new message",messageForRealTime);
+    })
 
-//     socket.on("disconnect",()=>{
-//         console.log("disconnected");
-//         userSocketIds.delete(user._id.toString())
-//     })
-// })
+    socket.on("disconnect",()=>{
+        console.log("disconnected");
+        userSocketIds.delete(user._id.toString())
+    })
+})
 
 server.listen((3000),()=>{
     console.log("Server is running on port 3000");
