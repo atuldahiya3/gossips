@@ -7,6 +7,7 @@ import { server } from "./constants/config";
 import { useDispatch, useSelector } from "react-redux";
 import { userExists, userNotExists } from "./redux/reducers/auth";
 import { Toaster } from "react-hot-toast";
+import { SocketProvier } from "./socket";
 
 
 const Home=lazy(() => import("./pages/Home")); 
@@ -23,7 +24,6 @@ const App=()=> {
   useEffect(()=>{
     axios.get(`${server}/user/myProfile`, {withCredentials:"true"}).then((res)=>{
       dispatch(userExists(res.data.data))
-      console.log("res",res);
     }).catch((err)=>dispatch(userNotExists()))
     
   },[dispatch])
@@ -33,7 +33,9 @@ const App=()=> {
       <BrowserRouter>
       <Suspense fallback={<LayoutLoader/>}>
       <Routes>
-        <Route element={<ProtectRoutes user={user}/>}>
+        <Route element={<SocketProvier>
+          <ProtectRoutes user={user}/>
+        </SocketProvier>}>
           <Route path='/' element={<Home/>}/>
           <Route path='/chats/:chatId' element={<Chat/>}/>
           <Route path='/groups' element={<Group/>}/>
