@@ -1,14 +1,14 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { io } from "socket.io-client";
 
 const SocketContext = createContext();
 
 const getSocket=()=>useContext(SocketContext)
 
-const socketProvier = ({ children }) => {
+const SocketProvier = ({ children }) => {
   const socket = useMemo(
     () =>
-      io("https://localhost:3000", {
+      io("http://localhost:3000", {
         withCredentials: true,
         auth: { token : localStorage.getItem("token")},
       }),
@@ -19,4 +19,4 @@ const socketProvier = ({ children }) => {
   );
 };
 
-export {getSocket,socketProvier}
+export {getSocket,SocketProvier}

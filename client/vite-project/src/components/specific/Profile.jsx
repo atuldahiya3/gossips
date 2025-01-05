@@ -10,7 +10,6 @@ import AvatarCard from '../Shared/AvatarCard'
 
 const Profile = () => {
   const {user}=useSelector(state=>state.auth)
-  console.log("user",user);
   return (
     <Stack spacing={"2rem"} direction={"column"} alignItems={"center"}>
       <Avatar

@@ -14,6 +14,7 @@ import userRoute from "../server/routes/user.js";
 import cors from "cors";
 import { v2 as cloudinary } from "cloudinary";
 import { Message } from "./models/message.js";
+import { corsOption } from "./constants/config.js";
 
 dotenv.config({
     path:'./.env'
@@ -32,17 +33,16 @@ cloudinary.config({
 // createUser(10);
 const app=express();
 const server=createServer(app)
-const io=new Server(server,{})
+const io=new Server(server,{
+    cors:corsOption
+})
 //using middleware to access values
 app.use(express.json());  // to access json data  
 app.use(express.urlencoded());  // to access form data
 
 app.use(cookieParser())
 
-app.use(cors({
-    origin:["http://127.0.0.1:5173","http://localhost:3000", process.env.CLIENT_URL],
-    credentials:true
-}))
+app.use(cors(corsOption))
 
 app.use("/api/v1/user",userRoute)
 app.use("/api/v1/chat",chatRoute)
@@ -52,7 +52,11 @@ app.get("/",(req,res)=>{
     res.send(" i Am HOmE")
 })
 
-
+io.use((socket,next)=>{
+    cookieParser()(socket.request,socket.request.res,()=>{
+        next();
+    })
+})
 
 io.on("connection",(socket)=>{
     socket.handshake.query.auth
