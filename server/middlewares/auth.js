@@ -37,4 +37,7 @@ const isAuthenticated = async (req, res, next) => {
     });
   }
 };
-export {isAuthenticated}
+const socketAuthenticator=async(err,socket,next)=>{
+
+}
+export {isAuthenticated, socketAuthenticator}
