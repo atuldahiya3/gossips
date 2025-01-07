@@ -1,4 +1,6 @@
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
+import { User } from "../models/user.js";
+import { GOSSIPS_TOKEN } from "../constants/config.js";
 
 const isAuthenticated = async (req, res, next) => {
   try {
@@ -37,7 +39,37 @@ const isAuthenticated = async (req, res, next) => {
     });
   }
 };
-const socketAuthenticator=async(err,socket,next)=>{
+const socketAuthenticator=async(res,err,socket,next)=>{
+  try{
+    if(err){
+      console.log("err",err);
 
+    };
+    const authToken=socket.request.cookies[GOSSIPS_TOKEN]
+    console.log("auth token",authToken);
+    if(!authToken){
+      console.log("please continue to login");
+      return res.status(401).json({ 
+        success: false,
+        message: 'Please login to continue' 
+      });
+    }
+    
+    const decodedData = jwt.verify(authToken, process.env.JWT_SECRET);
+
+    const user = await User.findById(decodedData._id);
+
+    if(!user){
+      console.log("please continue to login");
+      return res.status(401).json({ 
+        success: false,
+        message: 'Please login to continue' 
+      });
+    }
+    socket.user=user;
+    
+  }catch(e){
+    console.log("error socket authenticating",e);
+  }
 }
 export {isAuthenticated, socketAuthenticator}
