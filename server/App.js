@@ -63,6 +63,7 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   socket.handshake.query.auth;
+  
   const user = {
     _id: "abab",
     name: "atul",
