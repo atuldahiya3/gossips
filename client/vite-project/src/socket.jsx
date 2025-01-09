@@ -8,7 +8,7 @@ const getSocket=()=>useContext(SocketContext)
 const SocketProvier = ({ children }) => {
   const socket = useMemo(
     () =>
-      io("http://localhost:3000", {
+      io("https://localhost:3000", {
         withCredentials: true,
         auth: { token : localStorage.getItem("token")},
       }),

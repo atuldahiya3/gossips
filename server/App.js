@@ -54,16 +54,13 @@ app.get("/", (req, res) => {
 });
 
 io.use((socket, next) => {
-  cookieParser()(
-    socket.request,
-    socket.request.res,
-    async (err) => await socketAuthenticator(err, socket, next)
-  );
+  cookieParser()(socket.request, socket.request.res, async(err) => {
+    socketAuthenticator(err,socket,next );
+  });
 });
 
 io.on("connection", (socket) => {
   socket.handshake.query.auth;
-  
   const user = {
     _id: "abab",
     name: "atul",

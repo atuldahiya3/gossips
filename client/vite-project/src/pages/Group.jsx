@@ -25,7 +25,8 @@ import { IoIosPersonAdd } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import NewGroup from "../components/specific/NewGroup";
 import UserItem from "../components/Shared/UserItem";
-import { useMyGroupsQuery, useRenameGroupMutation } from "../redux/api/api";
+import { useMyGroupsQuery, useRemoveMemberMutation, useRenameGroupMutation } from "../redux/api/api";
+import toast from "react-hot-toast";
 
 const ConfirmDeleteDialog = lazy(() =>
   import("../components/Dialogue/ConfirmDeleteDiaglog")
@@ -40,6 +41,7 @@ function Group() {
   const isAddMember = false;
   console.log("chatId", chatId);
   const [renameGroup]=useRenameGroupMutation()
+  const [removeMember]=useRemoveMemberMutation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [groupName, setGroupName] = useState();
@@ -84,6 +86,15 @@ function Group() {
     closeConfirmDeleteHandler();
   };
   const removeMemberHandler=(id)=>{
+    const data={
+      "chatId":chatId,
+      "userId":id
+    }
+    removeMember(data).then((data)=>{
+      toast.success("Removed member successfully");
+    }).catch(()=>{
+      toast.error("error removing member")
+    })
     console.log("member removed",id);
   }
   useEffect(() => {
