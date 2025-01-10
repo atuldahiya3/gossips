@@ -77,7 +77,19 @@ const api = createApi({
             },
         }),
         providesTags: ["Group", "Chat"],
-      })
+      }),
+      removeMember:builder.mutation({
+        query:(data)=>({
+            url:`chat/removeMember`,
+            method:"PUT",
+            body:data,
+            credentials:"include",
+            headers: {
+              "Content-Type": "application/json", // Optional if automatically added
+            },
+        }),
+        providesTags: ["Group", "Chat"],
+      }),
   }),
 });
 
@@ -91,5 +103,6 @@ export const {
   useMyGroupsQuery,
   useMyFriendsQuery,
   useCreateGroupMutation,
-  useRenameGroupMutation
+  useRenameGroupMutation,
+  useRemoveMemberMutation
 } = api; // Export hooks

@@ -42,8 +42,7 @@ const isAuthenticated = async (req, res, next) => {
 const socketAuthenticator=async(res,err,socket,next)=>{
   try{
     if(err){
-      console.log("err",err);
-
+      return;
     };
     const authToken=socket.request.cookies[GOSSIPS_TOKEN]
     console.log("auth token",authToken);
