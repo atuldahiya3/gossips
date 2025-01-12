@@ -71,6 +71,8 @@ function Group() {
   };
 
   const openAddMemberHandler = () => {
+
+    
     console.log("add member");
   };
   const openConfirmDeleteHandler = () => {
