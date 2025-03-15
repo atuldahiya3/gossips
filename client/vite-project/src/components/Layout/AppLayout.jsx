@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Title from "../Shared/Title";
@@ -18,7 +18,13 @@ const AppLayout = () => (WrappedComponent) => {
     const chatId = params.chatId;
     
     const socket=getSocket()
-    console.log("socketId",socket.id);
+    useEffect(() => {
+      if (socket && socket.connected) {
+        console.log("🔹 socketId:", socket.id);
+      } else {
+        console.log("⚠️ Socket not connected yet");
+      }
+    }, [socket?.connected]);
 
     const {isLoading,data,isError,error,refetch}=useMyChatsQuery("")
     // useErrors({isError,error})

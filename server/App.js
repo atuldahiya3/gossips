@@ -35,15 +35,39 @@ cloudinary.config({
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: corsOption,
+  cors: {
+    origin: "http://localhost:5173", // Update to match your frontend URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  transports: ["websocket","polling"], // Ensure both transports are allowed
 });
+// app.use(cors(corsOption));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Change this to your frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // If using cookies, session, or auth headers
+  }) 
+);
+
+// ✅ Handle Preflight Requests
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173"); // Change to frontend URL
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true"); // ✅ Important for cookies/auth
+  res.status(204).end();
+});
+
 //using middleware to access values
 app.use(express.json()); // to access json data
 app.use(express.urlencoded()); // to access form data
 
 app.use(cookieParser());
 
-app.use(cors(corsOption));
+
 
 app.use("/api/v1/user", userRoute);
 app.use("/api/v1/chat", chatRoute);
@@ -60,41 +84,41 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-  socket.handshake.query.auth;
-  const user = {
-    _id: "abab",
-    name: "atul",
-  };
-  userSocketIds.set(user._id.toString(), socket.id);
+  // socket.handshake.query.auth;
+  // const user = {
+  //   _id: "abab",
+  //   name: "atul",
+  // };
+  // userSocketIds.set(user._id.toString(), socket.id);
   console.log("A user connected", socket.id);
 
-  socket.on(NEW_MESSAGE, async ({ chatId, members, messages }) => {
-    const messageForRealTime = {
-      content: messages,
-      _id: v4(),
-      sender: {
-        _id: user._id,
-        name: user.name,
-      },
-      chat: chatId,
-      cretedAt: new Date().toISOString(),
-    };
+  // socket.on(NEW_MESSAGE, async ({ chatId, members, messages }) => {
+  //   const messageForRealTime = {
+  //     content: messages,
+  //     _id: v4(),
+  //     sender: {
+  //       _id: user._id,
+  //       name: user.name,
+  //     },
+  //     chat: chatId,
+  //     cretedAt: new Date().toISOString(),
+  //   };
 
-    const messageForDb = {
-      content: messages,
-      sender: user._id,
-      chat: chatId,
-    };
+  //   const messageForDb = {
+  //     content: messages,
+  //     sender: user._id,
+  //     chat: chatId,
+  //   };
 
-    const membersSocket = getSockets(members);
-    io.to(membersSocket).emit(NEW_MESSAGE, {
-      chatId,
-      message: messageForRealTime,
-    });
-    io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
-    await Message.create(messageForDb);
-    console.log("new message", messageForRealTime);
-  });
+  //   const membersSocket = getSockets(members);
+  //   io.to(membersSocket).emit(NEW_MESSAGE, {
+  //     chatId,
+  //     message: messageForRealTime,
+  //   });
+  //   io.to(membersSocket).emit(NEW_MESSAGE_ALERT, { chatId });
+  //   await Message.create(messageForDb);
+  //   console.log("new message", messageForRealTime);
+  // });
 
   socket.on("disconnect", () => {
     console.log("disconnected");
@@ -106,4 +130,4 @@ server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-// export { userSocketIds };
+export { userSocketIds };
