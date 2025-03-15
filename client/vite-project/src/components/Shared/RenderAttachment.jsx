@@ -4,7 +4,7 @@ import { MdOutlineFileOpen } from "react-icons/md";
 
 
 const RenderAttachment = (file, url ) => {
-console.log("inside render", file);
+// console.log("inside render", file);
   switch (file) {
     
       case "image":

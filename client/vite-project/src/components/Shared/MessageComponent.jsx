@@ -29,8 +29,8 @@ const MessageComponent = ({ message, user }) => {
         attachments.map((attachment,index)=>{
             const url=attachment.url;
             const file=fileFormat(url);
-            console.log("file type",file);
-            console.log("url",url);
+            // console.log("file type",file);
+            // console.log("url",url);
             return (
                 <Box key={index}>
                     <a
